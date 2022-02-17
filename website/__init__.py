@@ -7,7 +7,11 @@ db = SQLAlchemy()
 DB_NAME = "database.db"
 
 
-def create_app():
+def create_app() -> Flask:
+    """
+    Creates a flask app
+    :return:
+    """
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'Rgdw#&nI23$26Br7!'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
@@ -26,13 +30,18 @@ def create_app():
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(id):
+    def load_user(id: str):
         return User.query.get(int(id))
 
     return app
 
 
-def create_database(app):
+def create_database(app: Flask) -> None:
+    """
+    Creates a new Database if there isn't one in the folder
+    :param app: the flask app
+    :return: None
+    """
     if not path.exists('website/' + DB_NAME):
         db.create_all(app=app)
         print("Created new Database")

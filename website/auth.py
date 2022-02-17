@@ -1,17 +1,24 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
+from werkzeug.datastructures import ImmutableMultiDict
+
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
-from typing import Tuple
+from typing import Tuple, Union
 
 auth = Blueprint('auth', __name__)
 HASH_METHOD = 'sha256'
 
 
 @auth.route('/sign-up', methods=["GET", "POST"])
-def sign_up():
-    if request.method == 'POST':
+def sign_up() -> str:
+    """
+    The sign-up user page, receives user's information form, validate it and
+    if it is valid saves the user to the DB and login the user to system
+    :return: HTML page for home if the input is valid else sign-up HTML page
+    """
+    if request.method == 'POST':    # Client has sent a form
         data = request.form
         if is_valid_signup_data(data):
             user = create_new_user(data)
@@ -23,12 +30,13 @@ def sign_up():
 
 
 @auth.route('/login', methods=["GET", "POST"])
-def login():
+def login() -> str:
+    """"
+    The login user page, receives user's information form, validate it and
+    if it is valid logins the user to system
+    :return: HTML page for home if the input is valid else login HTML page
     """
-    The login user paige
-    :return: The http of the login page
-    """
-    if request.method == 'POST':
+    if request.method == 'POST':    # Client has sent a form
         email, password = request.form.get('email'), request.form.get('password')
         user = User.query.filter_by(email=email).first()
         is_valid, message = is_valid_login(user, password)
@@ -45,12 +53,16 @@ def login():
 
 @auth.route('/logout')
 @login_required
-def logout():
+def logout() -> str:
+    """
+    Logs the user out of the system and reroute to the login page
+    :return: login HTML page
+    """
     logout_user()
     return redirect(url_for('auth.login'))
 
 
-def is_valid_signup_data(data) -> bool:
+def is_valid_signup_data(data: ImmutableMultiDict[str, str]) -> bool:
     """
     Check if the input entered by the user is legal and raise flash if not
     :param data: The request form of the user input
@@ -82,14 +94,13 @@ def is_valid_signup_data(data) -> bool:
     return False
 
 
-def is_valid_login(user, password) -> Tuple[bool, str]:
+def is_valid_login(user: Union[User, None], password: str) -> Tuple[bool, str]:
     """
-    Receive user email and password and return True if a user with the same
+    Receive user and password and return True if a user with the same
     email and password exist in the DB or False if not
-    :param email: The email the user has passed
-    :param password: The password the user has passed
+    :param user: User type with the email given or None if no such email found
+    :param password: The password the user has given
     """
-
     if user:    # If such email exist
         if check_password_hash(user.password, password):
             return True, user.first_name
@@ -98,7 +109,7 @@ def is_valid_login(user, password) -> Tuple[bool, str]:
     return False, "No such email"
 
 
-def create_new_user(data) -> User:
+def create_new_user(data: ImmutableMultiDict[str, str]) -> User:
     """
     Creates new user in our DB
     :param data: The request form of the user input
@@ -109,8 +120,8 @@ def create_new_user(data) -> User:
     password1 = data.get('password1')
 
     new_user = User(email=email, first_name=first_name,
-                    password=generate_password_hash(
-                        password1, method=HASH_METHOD))
+                    password=
+                    generate_password_hash(password1, method=HASH_METHOD))
     db.session.add(new_user)
     db.session.commit()
     return new_user
