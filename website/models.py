@@ -16,6 +16,16 @@ class Note(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
+class Post(db.Model):
+    """
+    This class represents a post that users write and save to the DB
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+
+
 class User(db.Model, UserMixin):
     """
     This class represents a user in the site
@@ -25,3 +35,4 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(MAX_LEN))
     first_name = db.Column(db.String(MAX_LEN))
     notes = db.relationship('Note')
+    posts = db.relationship('Post', backref='user', passive_deletes=True)

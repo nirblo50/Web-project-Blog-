@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
+
 </head>
 
 <body>
@@ -18,11 +19,12 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbar">
-        <div class="navbar-nav">
+        <div class="navbar-nav" style="width:100%">
           {% if user.is_authenticated %}
           <a class="nav-item nav-link {{home}}" id="home" href="/">Home</a>
+          <a class="nav-item nav-link {{posts_active}}" id="posts" href="/posts">New post</a>
           <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
-          <a class="nav-item nav-link disabled align-right" style="color: #2cbc72"; id="login_name" href="/">Logged-in as: {{ user.first_name }}</a>
+          <a class="nav-item nav-link ml-auto disabled" style="color: #2cbc72"; id="login_name" href="/">Logged-in as: {{ user.first_name }}</a>
           {% else %}
           <a class="nav-item nav-link {{login}}" id="login" href="/login">Login</a>
           <a class="nav-item nav-link {{sign_up}}" id="signUp" href="/sign-up">Sign Up</a>
@@ -54,21 +56,12 @@
         <p>{% block content %}{% endblock %}</p>
     </div>
 
-    ></script>
+
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
 
-    <script
-      type="text/javascript"
-      src="{{ url_for('static', filename='index.js') }}"
-    ></script>
   </body>
 </html>
