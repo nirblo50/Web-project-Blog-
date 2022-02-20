@@ -121,7 +121,8 @@ def create_new_user(data: ImmutableMultiDict[str, str]) -> User:
 
     new_user = User(email=email, first_name=first_name,
                     password=
-                    generate_password_hash(password1, method=HASH_METHOD))
+                    generate_password_hash(password1, method=HASH_METHOD),
+                    notifications=True)
     db.session.add(new_user)
     db.session.commit()
     return new_user

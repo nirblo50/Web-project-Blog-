@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Profile{% endblock %} {% block content
+%}
+{% if user.email == email %}
+<br>
+<h1 align="center">My Profile</h1>
+
+<div align="center">
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div class="card" style="width: 35rem;">
+      <ul class="list-group list-group-flush" align="left">
+        <li class="list-group-item">Your email: {{user.email}}</li>
+        <li class="list-group-item">Your name: {{user.first_name}}</li>
+        <li class="list-group-item">Number of posts: {{num_posts}}</li>
+        <li class="list-group-item">Subscribed to emails: {{user.notifications}}</li>
+    </div>
+    <br>
+    <a class="nav-item nav-link active" id="subscribe" href="/subscription/subscribe">Subscribe</a>
+    <a class="nav-item nav-link active" id="unsubscribe" href="/subscription/unsubscribe">Unsubscribe</a>
+</div>
+
+{% else %}
+    <br>
+    <br>
+    <h1 align="center">You do not have access to this page!</h1>
+{% endif %}
+{% endblock %}
+

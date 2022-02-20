@@ -22,6 +22,7 @@
         <div class="navbar-nav" style="width:100%">
           {% if user.is_authenticated %}
           <a class="nav-item nav-link {{home}}" id="home" href="/">Home</a>
+          <a class="nav-item nav-link {{profile}}" id="profile" href="/profile/{{ user.email }}">My profile</a>
           <a class="nav-item nav-link {{posts_active}}" id="posts" href="/posts">New post</a>
           <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
           <a class="nav-item nav-link ml-auto disabled" style="color: #2cbc72"; id="login_name" href="/">Logged-in as: {{ user.first_name }}</a>

@@ -1,21 +1,34 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
-<h1 align="center">Notes</h1>
-<ul class="list-group list-group-flush" id="notes">
-  {% for note in user.notes %}
-  <li class="list-group-item">
-    {{ note.data }}
-    <button type="button" class="close" onClick="deleteNote({{ note.id }})">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </li>
-  {% endfor %}
-</ul>
-<form method="POST">
-  <textarea name="note" id="note" class="form-control"></textarea>
-  <br />
-  <div align="center">
-    <button type="submit" class="btn btn-primary">Add Note</button>
+<h1 align="center">{% block header %}Posts Board{% endblock %}</h1>
+<div id="posts">
+  {% for post in posts %}
+  <div class="card border-dark">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <a href="/user_posts/{{post.user.email}}">{{post.user.email}} ({{post.user.first_name}})</a>
+      {% if user.id == post.author %}
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary dropdown-toggle"
+          data-bs-toggle="dropdown"
+        ></button>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
+          </li>
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    <div class="card-body">
+      <div class="card-text">{{post.text}}</div>
+    </div>
+    <div class="card-footer text-muted">{{post.date_created}}</div>
   </div>
-</form>
+  <br > {% endfor %}
+</div>
+{% block footer %}
+
+{% endblock %}
 {% endblock %}

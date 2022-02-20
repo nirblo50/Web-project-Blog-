@@ -34,5 +34,5 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(MAX_LEN), unique=True)
     password = db.Column(db.String(MAX_LEN))
     first_name = db.Column(db.String(MAX_LEN))
-    notes = db.relationship('Note')
+    notifications = db.Column(db.BOOLEAN)
     posts = db.relationship('Post', backref='user', passive_deletes=True)
