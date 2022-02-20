@@ -24,6 +24,7 @@ Requirements:
 1. flask
 2. Flask-SQLAlchemy
 3. flask-login
+4. werkzeug
 ```
 
 ### Running The App
