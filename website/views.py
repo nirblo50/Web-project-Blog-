@@ -137,9 +137,10 @@ def send_post_to_all(post: Post) -> None:
     """
     users = User.query.all()
     post_writer = User.query.filter_by(id=post.author).first()
+    writer_name = post_writer.first_name
 
     for user in users:
         if user.notifications:  # If user is subscribed to notifications
-            send_email(user.email, f"New Post Published by {user.first_name}"
+            send_email(user.email, f"New Post Published by {writer_name}"
                        , f"{post_writer.email} has posted: \n{post.text}",
                        "By, Nir Balouka")
