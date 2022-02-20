@@ -2,8 +2,7 @@
 
 ##  About this project
 ```bash
-This project is a Web-app that allows users to publish posts and view other
-user's posts.  
+This project is a Web-app that allows users to publish posts and view other user's posts.  
 ```
 ##  Features
 ```bash
