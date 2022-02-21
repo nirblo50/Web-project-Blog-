@@ -35,7 +35,7 @@ python main.py
 
 ### Viewing The Website
 ```bash
-To see the website I aready deployed you can visit: http://nirblo50.pythonanywhere.com/
+To see the website I already deployed you can visit: http://nirblo50.pythonanywhere.com/
 
 To deploy your own, after running main.py go to:
 http://127.0.0.1:5000
