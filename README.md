@@ -2,8 +2,7 @@
 
 ##  About this project
 ```bash
-This project is a Web-app that allows users to publish posts, and view other
-users posts.  
+This project is a Web-app that allows users to publish posts and view other user's posts.  
 ```
 ##  Features
 ```bash
@@ -25,6 +24,7 @@ Requirements:
 1. flask
 2. Flask-SQLAlchemy
 3. flask-login
+4. werkzeug
 ```
 
 ### Running The App

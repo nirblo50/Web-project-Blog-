@@ -71,7 +71,7 @@ def user_posts(email):
         flash('No user with that email exists.', category='error')
         return redirect(url_for('views.home'))
 
-    posts = Post.query.filter_by(author=user.id).all()
+    posts = user.posts
     return render_template("user_posts.html", user=current_user, posts=posts, email=email, first_name=user.first_name)
 
 
