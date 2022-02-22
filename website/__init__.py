@@ -22,7 +22,7 @@ def create_app() -> Flask:
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
 
-    from .models import User, Note, Post
+    from .models import User, Post
     create_database(app)
 
     login_manager = LoginManager()

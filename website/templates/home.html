@@ -5,7 +5,13 @@
   {% for post in posts %}
   <div class="card border-dark">
     <div class="card-header d-flex justify-content-between align-items-center">
+      {% if post.id in user_favorites_id %}
+      <a href="/flag-favorite/{{post.id}}"> <i class="fa-solid fa-star"></i> Remove from favorites</a>
+      {% else %}
+      <a href="/flag-favorite/{{post.id}}"> <i class="fa-regular fa-star"></i> Add to favorites </a>
+      {% endif %}
       <a href="/user_posts/{{post.user.email}}">{{post.user.email}} ({{post.user.first_name}})</a>
+
       {% if user.id == post.author %}
       <div class="btn-group">
         <button
@@ -19,6 +25,8 @@
           </li>
         </ul>
       </div>
+      {% else %}
+      <i class="fa-solid fa-lock"></i>
       {% endif %}
     </div>
     <div class="card-body">

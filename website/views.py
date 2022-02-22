@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, \
     flash
 from flask_login import login_required, current_user
-from .models import Post, User
+
+from .models import Post, User, Favorite
 from . import db
 from email_sender import send_email
 
@@ -30,8 +31,10 @@ def home() -> str:
     :return:
     """
     posts = Post.query.all()
+    user_favorites = Favorite.query.filter_by(user_id=current_user.id).all()
+    user_favorites_id = [fav.post_id for fav in user_favorites]
     return render_template("home.html", home="active", user=current_user,
-                           posts=posts)
+                           posts=posts, user_favorites_id=user_favorites_id)
 
 
 @views.route('/posts', methods=["GET", "POST"])
@@ -54,7 +57,8 @@ def new_post() -> str:
             send_post_to_all(new_post)
 
     posts = Post.query.all()
-    return render_template("new_post.html", posts_active="active", user=current_user, posts=posts)
+    return render_template("new_post.html", posts_active="active",
+                           user=current_user, posts=posts)
 
 
 @views.route("/user_posts/<email>")
@@ -72,7 +76,8 @@ def user_posts(email):
         return redirect(url_for('views.home'))
 
     posts = user.posts
-    return render_template("user_posts.html", user=current_user, posts=posts, email=email, first_name=user.first_name)
+    return render_template("user_posts.html", user=current_user, posts=posts,
+                           email=email, first_name=user.first_name)
 
 
 @views.route("/profile/<email>", methods=["GET", "POST"])
@@ -84,7 +89,27 @@ def profile(email):
     :return: HTML page of the profile
     """
     num_posts = len(current_user.posts)
-    return render_template("profile.html", profile="active", email=email ,user=current_user, num_posts=num_posts)
+    return render_template("profile.html", profile="active", email=email,
+                           user=current_user, num_posts=num_posts)
+
+
+@views.route("/favorites")
+@login_required
+def favorites():
+    """
+    The Page of all the posts a certain user had flagged favorites
+    :return: HTML page of the favorites
+    """
+    favorites = Favorite.query.filter_by(user_id=current_user.id)
+    user_favorites_id = [fav.post_id for fav in favorites]
+    posts = Post.query.filter(
+        Post.id.in_(user_favorites_id)).all()
+
+    return render_template("favorites.html",
+                           user=current_user, posts=posts, favorites="active",
+                           email=current_user.email,
+                           first_name=current_user.first_name,
+                           user_favorites_id=user_favorites_id)
 
 
 @views.route("/subscription/<subscribe>", methods=["GET", "POST"])
@@ -126,6 +151,26 @@ def delete_post(id: str) -> str:
         db.session.commit()
         flash('Post deleted.', category='success')
 
+    return redirect(url_for('views.home'))
+
+
+@views.route("/flag-favorite/<post_id>")
+@login_required
+def flag_as_favorite(post_id: str) -> str:
+    """
+    Flags a Post as favorite for the user who asked
+    :param post_id: The Id of the post to flag
+    :return: html page of the home page
+    """
+    favorite = Favorite.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+    if not favorite:    # If user hasn't flagged this post
+        new_favorite = Favorite(user_id=current_user.id, post_id=post_id)
+        db.session.add(new_favorite)
+        db.session.commit()
+    else:
+        db.session.delete(favorite)
+        db.session.commit()
+        return redirect(url_for('views.favorites'))
     return redirect(url_for('views.home'))
 
 
