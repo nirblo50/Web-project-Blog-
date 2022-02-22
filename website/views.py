@@ -31,8 +31,7 @@ def home() -> str:
     :return:
     """
     posts = Post.query.all()
-    user_favorites = Favorite.query.filter_by(user_id=current_user.id).all()
-    user_favorites_id = [fav.post_id for fav in user_favorites]
+    user_favorites_id = [fav.post_id for fav in current_user.favorites]
     return render_template("home.html", home="active", user=current_user,
                            posts=posts, user_favorites_id=user_favorites_id)
 
@@ -75,9 +74,11 @@ def user_posts(email):
         flash('No user with that email exists.', category='error')
         return redirect(url_for('views.home'))
 
+    user_favorites_id = [fav.post_id for fav in user.favorites]
     posts = user.posts
     return render_template("user_posts.html", user=current_user, posts=posts,
-                           email=email, first_name=user.first_name)
+                           email=email, first_name=user.first_name,
+                           user_favorites_id=user_favorites_id)
 
 
 @views.route("/profile/<email>", methods=["GET", "POST"])
@@ -100,8 +101,7 @@ def favorites():
     The Page of all the posts a certain user had flagged favorites
     :return: HTML page of the favorites
     """
-    favorites = Favorite.query.filter_by(user_id=current_user.id)
-    user_favorites_id = [fav.post_id for fav in favorites]
+    user_favorites_id = [fav.post_id for fav in current_user.favorites]
     posts = Post.query.filter(
         Post.id.in_(user_favorites_id)).all()
 
