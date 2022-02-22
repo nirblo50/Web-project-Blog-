@@ -19,12 +19,7 @@ Make sure you have Python version of 3.9 or above installed.
 
 
 ```bash
-Requirements:
---------------
-1. flask
-2. Flask-SQLAlchemy
-3. flask-login
-4. werkzeug
+pip install -r requirements.txt
 ```
 
 ### Running The App
@@ -35,6 +30,8 @@ python main.py
 
 ### Viewing The Website
 ```bash
-After running the app go to:
+To see the website I already deployed you can visit: http://nirblo50.pythonanywhere.com/
+
+To deploy your own, after running main.py go to:
 http://127.0.0.1:5000
 ```
