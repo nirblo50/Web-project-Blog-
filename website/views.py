@@ -188,4 +188,6 @@ def send_post_to_all(post: Post) -> None:
         if user.notifications:  # If user is subscribed to notifications
             send_email(user.email, f"New Post Published by {writer_name}"
                        , f"{post_writer.email} has posted: \n{post.text}",
-                       "By, Nir Balouka")
+                       "By, Nir Balouka \n\n\n" +
+                       "You can unsubscribe in the link:\n" +
+                       "https://nirblo50.pythonanywhere.com/subscription/unsubscribe")
