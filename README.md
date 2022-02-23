@@ -10,6 +10,7 @@ This project is a Web-app that allows users to publish posts and view other user
 2. User interface: Navbar / Buttons / Forms
 3. Publishing posts and viewing other user's posts
 4. Database (SQLAlchemy): Save users, prefferences and Posts
+5. Email notifications and updates
 ```
 
 
