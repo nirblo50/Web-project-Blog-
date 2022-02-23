@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, request, \
     flash
 from flask_login import login_required, current_user
-
 from .models import Post, User, Favorite
 from . import db
 from email_sender import send_email
-
+from website.auth import ADMIN_EMAIL
 views = Blueprint('views', __name__)
 
 
@@ -33,7 +32,8 @@ def home() -> str:
     posts = Post.query.all()
     user_favorites_id = [fav.post_id for fav in current_user.favorites]
     return render_template("home.html", home="active", user=current_user,
-                           posts=posts, user_favorites_id=user_favorites_id)
+                           posts=posts, user_favorites_id=user_favorites_id,
+                           ADMIN_EMAIL=ADMIN_EMAIL)
 
 
 @views.route('/posts', methods=["GET", "POST"])
@@ -52,7 +52,7 @@ def new_post() -> str:
             new_post = Post(text=text, author=current_user.id)
             db.session.add(new_post)
             db.session.commit()
-            flash('Note added!', category='success')
+            flash('your post has been published', category='success')
             send_post_to_all(new_post)
 
     posts = Post.query.all()
@@ -144,7 +144,7 @@ def delete_post(id: str) -> str:
 
     if not post:
         flash("Post does not exist.", category='error')
-    elif current_user.id != post.author:
+    elif current_user.id != post.author and current_user.email != ADMIN_EMAIL:
         flash('You do not have permission to delete this post.', category='error')
     else:
         db.session.delete(post)

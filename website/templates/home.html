@@ -12,7 +12,7 @@
       {% endif %}
       <a href="/user_posts/{{post.user.email}}">{{post.user.email}} ({{post.user.first_name}})</a>
 
-      {% if user.id == post.author %}
+      {% if user.id == post.author or user.email == ADMIN_EMAIL %}
       <div class="btn-group">
         <button
           type="button"
