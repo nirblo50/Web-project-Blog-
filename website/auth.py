@@ -1,14 +1,30 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from werkzeug.datastructures import ImmutableMultiDict
-
+from flask_admin.contrib.sqla import ModelView
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 from typing import Tuple, Union
 
+ADMIN_EMAIL = "nirblo50@gmail.com"
 auth = Blueprint('auth', __name__)
 HASH_METHOD = 'sha256'
+
+
+class AdminModelView(ModelView):
+    """
+    This class is the view page of the admin
+    """
+    def is_accessible(self):
+        """ Lets only the user logged in to admin user to see admin menu """
+        if current_user.is_authenticated:
+            return current_user.email == ADMIN_EMAIL
+        return False
+
+    def inaccessible_callback(self, name, **kwargs):
+        """ Show unauthorized user forbidden page """
+        return "<h1> Forbidden </h1>"
 
 
 @auth.route('/sign-up', methods=["GET", "POST"])
