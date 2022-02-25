@@ -51,6 +51,11 @@
           <a
                   class="nav-item nav-link ml-auto disabled" style="color: #2cbc72"; id="login_name" href="/">Logged-in as: {{ user.first_name }}
           </a>
+              <form class="form-inline" action="\search_results" method="post">
+                <input class="form-control mr-sm-2" id="search" name="search" type="search" placeholder="Search Post" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+
           {% else %}
           <a
                   class="nav-item nav-link {{login}}" id="login" href="/login">Login

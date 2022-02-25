@@ -5,6 +5,8 @@ from .models import Post, User, Favorite
 from . import db
 from email_sender import send_email
 from website.auth import ADMIN_EMAIL
+from typing import List
+
 views = Blueprint('views', __name__)
 
 
@@ -15,6 +17,8 @@ def default() -> str:
     to the system, else reroutes to the login page
     :return:
     """
+    #return render_template("search_results.html", home="active", user=current_user)
+
     if current_user.is_authenticated:
         return redirect(url_for('views.home'))
     else:
@@ -74,11 +78,12 @@ def user_posts(email):
         flash('No user with that email exists.', category='error')
         return redirect(url_for('views.home'))
 
-    user_favorites_id = [fav.post_id for fav in user.favorites]
-    posts = user.posts
-    return render_template("user_posts.html", user=current_user, posts=posts,
-                           email=email, first_name=user.first_name,
-                           user_favorites_id=user_favorites_id)
+    user_favorites_id = [fav.post_id for fav in current_user.favorites]
+    return render_template("user_posts.html", user=current_user,
+                           posts=user.posts, email=email,
+                           first_name=user.first_name,
+                           user_favorites_id=user_favorites_id,
+                           ADMIN_EMAIL=ADMIN_EMAIL)
 
 
 @views.route("/profile/<email>", methods=["GET", "POST"])
@@ -94,7 +99,7 @@ def profile(email):
                            user=current_user, num_posts=num_posts)
 
 
-@views.route("/favorites")
+@views.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
     """
@@ -109,7 +114,8 @@ def favorites():
                            user=current_user, posts=posts, favorites="active",
                            email=current_user.email,
                            first_name=current_user.first_name,
-                           user_favorites_id=user_favorites_id)
+                           user_favorites_id=user_favorites_id,
+                           ADMIN_EMAIL=ADMIN_EMAIL)
 
 
 @views.route("/subscription/<subscribe>", methods=["GET", "POST"])
@@ -174,6 +180,36 @@ def flag_as_favorite(post_id: str) -> str:
     return redirect(url_for('views.home'))
 
 
+@views.route('/search_results', methods=["GET", "POST"])
+@login_required
+def search_results():
+    """ The page with all the post found by user's input  """
+    search_input = None
+    if request.method == 'POST':
+        search_input = request.form.get('search')
+        print(search_input)
+    posts = do_post_search(search_input)
+    user_favorites_id = [fav.post_id for fav in current_user.favorites]
+    return render_template("search_results.html",
+                           user=current_user, posts=posts,
+                           user_favorites_id=user_favorites_id,
+                           ADMIN_EMAIL=ADMIN_EMAIL)
+
+
+def do_post_search(search_input: str) -> List[Post]:
+    """
+    The search algorithm for posts
+    :param search_input:
+    :return:
+    """
+    posts = Post.query.filter().all()
+    relevant_posts = []
+    for post in posts:
+        if search_input.lower() in post.text.lower():
+                    relevant_posts.append(post)
+    return relevant_posts
+
+
 def send_post_to_all(post: Post) -> None:
     """
     Send an email with a new post to all users
@@ -187,7 +223,7 @@ def send_post_to_all(post: Post) -> None:
     for user in users:
         if user.notifications:  # If user is subscribed to notifications
             send_email(user.email, f"New Post Published by {writer_name}"
-                       , f"{post_writer.email} has posted: \n{post.text}",
+                       , f"{post_writer.email} has posted: \n\n{post.text}",
                        "By, Nir Balouka \n\n\n" +
                        "You can unsubscribe in the link:\n" +
                        "https://nirblo50.pythonanywhere.com/subscription/unsubscribe")

@@ -4,7 +4,9 @@ from website import db
 from website import create_app
 from website.auth import AdminModelView
 
+
 app = create_app()
+
 
 # The admin for the site
 admin = Admin(app)

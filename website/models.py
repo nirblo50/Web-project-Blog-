@@ -5,7 +5,6 @@ from sqlalchemy.sql import func
 MAX_LEN = 100
 
 
-
 class User(db.Model, UserMixin):
     """
     This class represents a user in the site
@@ -23,21 +22,12 @@ class Post(db.Model):
     """
     This class represents a post that users write and save to the DB
     """
+    __searchable__ = ['text']
+
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     author = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-
-
-class Like(db.Model):
-    """
-    This class represents a Like that users can give to posts
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.Integer, db.ForeignKey(
-        'user.id', ondelete="CASCADE"), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey(
-        'post.id', ondelete="CASCADE"), nullable=False)
 
 
 class Favorite(db.Model):

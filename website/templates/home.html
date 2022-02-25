@@ -1,6 +1,7 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
 %}
-<h1 align="center">{% block header %}Posts Board{% endblock %}</h1>
+<h2 align="center">{% block header %}Posts Board{% endblock %}</h2>
+<br>
 <div id="posts">
   {% for post in posts %}
   <div class="card border-dark">
@@ -16,9 +17,8 @@
       <div class="btn-group">
         <button
           type="button"
-          class="btn btn-sm btn-primary dropdown-toggle"
-          data-bs-toggle="dropdown"
-        ></button>
+          class="btn" data-bs-toggle="dropdown"><i class="fa-solid fa-ellipsis"></i>
+        </button>
         <ul class="dropdown-menu">
           <li>
             <a href="/delete-post/{{post.id}}" class="dropdown-item">Delete</a>
