@@ -17,8 +17,6 @@ def default() -> str:
     to the system, else reroutes to the login page
     :return:
     """
-    #return render_template("search_results.html", home="active", user=current_user)
-
     if current_user.is_authenticated:
         return redirect(url_for('views.home'))
     else:
@@ -118,6 +116,22 @@ def favorites():
                            ADMIN_EMAIL=ADMIN_EMAIL)
 
 
+@views.route('/search_results', methods=["GET", "POST"])
+@login_required
+def search_results():
+    """ The page with all the post found by user's input  """
+    search_input = None
+    if request.method == 'POST':
+        search_input = request.form.get('search')
+        print(search_input)
+    posts = do_post_search(search_input)
+    user_favorites_id = [fav.post_id for fav in current_user.favorites]
+    return render_template("search_results.html",
+                           user=current_user, posts=posts,
+                           user_favorites_id=user_favorites_id,
+                           ADMIN_EMAIL=ADMIN_EMAIL)
+
+
 @views.route("/subscription/<subscribe>", methods=["GET", "POST"])
 @login_required
 def subscribe(subscribe):
@@ -151,7 +165,8 @@ def delete_post(id: str) -> str:
     if not post:
         flash("Post does not exist.", category='error')
     elif current_user.id != post.author and current_user.email != ADMIN_EMAIL:
-        flash('You do not have permission to delete this post.', category='error')
+        flash('You do not have permission to delete this post.',
+              category='error')
     else:
         db.session.delete(post)
         db.session.commit()
@@ -168,7 +183,8 @@ def flag_as_favorite(post_id: str) -> str:
     :param post_id: The Id of the post to flag
     :return: html page of the home page
     """
-    favorite = Favorite.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+    favorite = Favorite.query.filter_by(user_id=current_user.id,
+                                        post_id=post_id).first()
     if not favorite:    # If user hasn't flagged this post
         new_favorite = Favorite(user_id=current_user.id, post_id=post_id)
         db.session.add(new_favorite)
@@ -178,22 +194,6 @@ def flag_as_favorite(post_id: str) -> str:
         db.session.commit()
         return redirect(url_for('views.favorites'))
     return redirect(url_for('views.home'))
-
-
-@views.route('/search_results', methods=["GET", "POST"])
-@login_required
-def search_results():
-    """ The page with all the post found by user's input  """
-    search_input = None
-    if request.method == 'POST':
-        search_input = request.form.get('search')
-        print(search_input)
-    posts = do_post_search(search_input)
-    user_favorites_id = [fav.post_id for fav in current_user.favorites]
-    return render_template("search_results.html",
-                           user=current_user, posts=posts,
-                           user_favorites_id=user_favorites_id,
-                           ADMIN_EMAIL=ADMIN_EMAIL)
 
 
 def do_post_search(search_input: str) -> List[Post]:

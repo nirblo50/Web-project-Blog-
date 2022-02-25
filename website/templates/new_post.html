@@ -1,5 +1,61 @@
 {% extends "base.html" %} {% block title %}New Post{% endblock %} {% block content
 %}
+  <br>
+  <br>
+<style>
+.button {
+  position: relative;
+  padding: 8px 16px;
+  background: #009579;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.button:active {
+  background: #007a63;
+}
+
+.button__text {
+  font: bold 20px "Quicksand", san-serif;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading .button__text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+</style>
+<div class="container p-5 my-5 border bg-dark text-white">
 <h1 align="center">New Post</h1>
 <ul class="list-group list-group-flush" id="posts">
 <br>
@@ -8,8 +64,11 @@
   <textarea name="text" id="text" class="form-control"></textarea>
   <br />
   <div align="center">
-    <button type="submit" class="btn btn-primary"> Publish Post </button>
-  </div>
+    <button type="submit" class="button"
+            onclick="this.classList.toggle('button--loading')"> Publish
+      <span class="button__text"></span>
+    </button>
+  <div/>
 </form>
-
+</div>
 {% endblock %}
