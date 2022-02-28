@@ -16,6 +16,7 @@ class AdminModelView(ModelView):
     """
     This class is the view page of the admin
     """
+
     def is_accessible(self):
         """ Lets only the user logged in to admin user to see admin menu """
         if current_user.is_authenticated:
@@ -34,7 +35,7 @@ def sign_up() -> str:
     if it is valid saves the user to the DB and login the user to system
     :return: HTML page for home if the input is valid else sign-up HTML page
     """
-    if request.method == 'POST':    # Client has sent a form
+    if request.method == 'POST':  # Client has sent a form
         data = request.form
         if is_valid_signup_data(data):
             user = create_new_user(data)
@@ -52,8 +53,9 @@ def login() -> str:
     if it is valid logins the user to system
     :return: HTML page for home if the input is valid else login HTML page
     """
-    if request.method == 'POST':    # Client has sent a form
-        email, password = request.form.get('email'), request.form.get('password')
+    if request.method == 'POST':  # Client has sent a form
+        email, password = request.form.get('email'), request.form.get(
+            'password')
         user = User.query.filter_by(email=email).first()
         is_valid, message = is_valid_login(user, password)
         if is_valid:
@@ -65,6 +67,26 @@ def login() -> str:
             flash(message, category='error')
 
     return render_template("login.html", login="active", user=current_user)
+
+
+@auth.route('/guest_login')
+def guest_login() -> str:
+    """
+    Creates a new guest user
+    """
+    guests = User.query.filter_by(first_name="Guest").all()
+    guest_id = max([user.id for user in guests]) + 1
+    guest = {"email": f"gust{guest_id}@guest.com",
+             "firstName": "Guest",
+             "password1": "123456789"}
+    new_guest = create_new_user(guest)
+    new_guest.notifications = False
+
+    login_user(new_guest, remember=True)
+    db.session.commit()
+    flash(f'Logged in successfully!, Hello Guest',
+          category='success')
+    return redirect(url_for('views.home'))
 
 
 @auth.route('/logout')
@@ -91,7 +113,7 @@ def is_valid_signup_data(data: ImmutableMultiDict[str, str]) -> bool:
 
     user = User.query.filter_by(email=email).first()
 
-    if user:    # If user with this email is in the DB
+    if user:  # If user with this email is in the DB
         flash('Email already exists.', category='error')
 
     elif password1 != password2:
@@ -117,7 +139,7 @@ def is_valid_login(user: Union[User, None], password: str) -> Tuple[bool, str]:
     :param user: User type with the email given or None if no such email found
     :param password: The password the user has given
     """
-    if user:    # If such email exist
+    if user:  # If such email exist
         if check_password_hash(user.password, password):
             return True, user.first_name
         else:
