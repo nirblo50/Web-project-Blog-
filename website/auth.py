@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
 from typing import Tuple, Union
+import random
+import string
 
 ADMIN_EMAIL = "nirblo50@gmail.com"
 auth = Blueprint('auth', __name__)
@@ -78,7 +80,7 @@ def guest_login() -> str:
     guest_id = max([user.id for user in guests]) + 1 if guests else 1
     guest = {"email": f"guest{guest_id}@guest.com",
              "firstName": "Guest",
-             "password1": "123456789"}
+             "password1": generate_password(password_len=7)}
     new_guest = create_new_user(guest)
     new_guest.notifications = False
 
@@ -164,3 +166,13 @@ def create_new_user(data: ImmutableMultiDict[str, str]) -> User:
     db.session.add(new_user)
     db.session.commit()
     return new_user
+
+
+def generate_password(password_len) -> str:
+    """
+    Generates a new random password
+    :return: random password
+    """
+    options = string.ascii_lowercase + '123456789'
+    password = ''.join(random.choice(options) for i in range(password_len))
+    return password
