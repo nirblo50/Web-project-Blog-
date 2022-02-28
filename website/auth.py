@@ -75,8 +75,8 @@ def guest_login() -> str:
     Creates a new guest user
     """
     guests = User.query.filter_by(first_name="Guest").all()
-    guest_id = max([user.id for user in guests]) + 1
-    guest = {"email": f"gust{guest_id}@guest.com",
+    guest_id = max([user.id for user in guests]) + 1 if guests else 1
+    guest = {"email": f"guest{guest_id}@guest.com",
              "firstName": "Guest",
              "password1": "123456789"}
     new_guest = create_new_user(guest)
