@@ -2,7 +2,8 @@
 
 ##  About this project
 ```bash
-This project is a Web-app that allows users to publish posts and view other user's posts.  
+This project is a Web-app that allows users to publish posts and view other user's posts. 
+My main focus developing this project was the user management and sql database.
 ```
 ##  Features
 ```bash
