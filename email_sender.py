@@ -1,6 +1,6 @@
 import smtplib, ssl
 
-sender, password = "balouka.reminder@gmail.com", "Reminder1234"
+SENDER, PASSWORD = "balouka.reminder@gmail.com", "Reminder1234"
 
 template = """\
 Subject: #Title#
@@ -30,8 +30,8 @@ def send_email(receiver: str, title: str, body: str, sign: str) -> bool:
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", port,
                               context=context) as server:
-            server.login(sender, password)
-            server.sendmail(sender, receiver, message)
+            server.login(SENDER, PASSWORD)
+            server.sendmail(SENDER, receiver, message)
             print("email was sent!")
     except Exception as e:
         print("email was not sent do to an error:\n", e)
