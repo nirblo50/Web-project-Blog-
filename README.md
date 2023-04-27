@@ -2,6 +2,7 @@
 
 ##  About this project
 ```bash
+Watch the demo at: http://nirblo50.pythonanywhere.com/
 This project is a Web-app that allows users to publish posts and view other user's posts. 
 My main focus developing this project was the user management and sql database.
 ```
