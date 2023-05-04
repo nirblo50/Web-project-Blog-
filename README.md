@@ -1,5 +1,11 @@
 # Python Web-Project using Flask
 
+<div style="display:flex; justify-content:center;">
+    <img alt="Coding" src="web.jpg" height="220" style="margin-right:10px;">
+    <img alt="Coding" src="web2.jpg" height="220">
+</div>
+
+
 ##  About this project
 ```bash
 Watch the demo at: http://nirblo50.pythonanywhere.com
