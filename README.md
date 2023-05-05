@@ -44,3 +44,7 @@ To see the website I already deployed you can visit: http://nirblo50.pythonanywh
 To deploy your own, after running main.py go to:
 http://127.0.0.1:5000
 ```
+<br>
+<p align="center">
+<img alt="Coding" src="web.gif" height="350">
+</p>
